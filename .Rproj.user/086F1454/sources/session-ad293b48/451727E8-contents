@@ -2,7 +2,7 @@
 title: "US Census Data on Middle Eastern and North African Populations"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: rows
     vertical_layout: scroll
 runtime: shiny
 
@@ -26,6 +26,8 @@ if(!dir.exists("data")){
 
 combined_df <- readRDS(here("data", "combined_df.RDS"))
 
+combined_df$label <- fct_recode(combined_df$label, "Total Arab" = "Arab")
+
 ```
 # About
 
@@ -36,21 +38,17 @@ combined_df <- readRDS(here("data", "combined_df.RDS"))
 Source: [CNN](https://www.cnn.com/2022/04/28/us/arab-american-heritage-month-race-deconstructed-newsletter/index.html)
 
 
-<b> Census Data Challenges for MENA Populations:
-</b>
+**Census Data Challenges for MENA Populations:**
 Census data on Middle Eastern and North African (MENA) populations in the United States faces notable challenges due to the prevalent classification of many individuals from the MENA region as "White" under traditional census measures. This classification oversimplifies the diverse MENA demographic, masking distinct social structures and cultural nuances present among these racial groups. The broad categorization of MENA individuals as "White" complicates efforts to accurately capture unique demographic features, hindering comprehensive insights into economic, social, and healthcare considerations specific to this population. The complexity of MENA identities, spanning diverse ethnicities, cultures, and historical backgrounds, often goes unrecognized within conventional census categories.
 
 
-<b> Purpose of the Dashboard:
-</b>
+**Purpose of the Dashboard:**
 This dashboard is designed with the primary goal of acknowledging Arab ethnic identity and characterizing the distribution of Arab communities across the United States. While it is mostly a project bred out of personal curiosity, it can also serve as a practical tool for individuals seeking to locate to a state where they hope to identify individuals from a similar community. In an environment where discrimination and exclusion impact the quality of life for many minority groups, finding community becomes crucial. Community support, grounded in shared cultural characteristics, can serve as a protective factor for enhancing individuals' overall well-being. 
 
-<b> Data's Role for Researchers and Policymakers:
-</b>
+**Data's Role for Researchers and Policymakers:**
 Beyond its utility for individuals, the dashboard has a broader purpose. The information it provides can be valuable for researchers and policymakers seeking to engage more effectively with MENA communities. By addressing the limitations in current census categorizations, there is a growing recognition of the need to refine these classifications to better reflect the intricate diversity within the MENA population. This refinement is essential for ensuring accurate representation in demographic studies and facilitating the formulation of targeted interventions and policies that address the specific challenges faced by the MENA community.
 
-<b> Data Source:
-</b>
+**Data Source:**
 This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus) package in R.
 
 
@@ -62,15 +60,15 @@ This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus)
 
 ### Conflation of Identities
 
-In an article published in the <i> The American Journal of Public Health </i> in 2019, [The Contested Whiteness of Arab Identity in the United States: Implications for Health Disparities Research](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6775909/), authors Sarah Abboud, Perla Chebli, and Em Rabelais highlight four key paradoxes relating to Arab identity. They state that these paradoxes are:
+In an article published in the *The American Journal of Public Health* in 2019, [The Contested Whiteness of Arab Identity in the United States: Implications for Health Disparities Research](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6775909/), authors Sarah Abboud, Perla Chebli, and Em Rabelais highlight four key paradoxes relating to Arab identity. They state that these paradoxes are:
 
-<b> (1) Arabs are defined as a monolithic category. </b> Similar to Latinx and Black people, Arabs are diverse in terms of nationalities, religions, and ethnicities. The conflation of “Arab” with “Middle Eastern” and with “Muslim” undermines the unique characteristics of these three categories, in particular regarding their health and health disparities.
+**(1) Arabs are defined as a monolithic category.** Similar to Latinx and Black people, Arabs are diverse in terms of nationalities, religions, and ethnicities. The conflation of “Arab” with “Middle Eastern” and with “Muslim” undermines the unique characteristics of these three categories, in particular regarding their health and health disparities.
 
-<b> (2) Arabs in the United States are simultaneously racialized as White and non-White. </b> Although many, but not all, Arabs phenotypically can pass as White, their lives are racially marked, as they are perceived and treated as non-White. Although they are considered White by the US Office of Management and Budget (OMB)—and thus on the US Census—the daily lives of Arabs in the United States are marked by discrimination because of their ethnicity, religion, and immigration status.
+**(2) Arabs in the United States are simultaneously racialized as White and non-White.** Although many, but not all, Arabs phenotypically can pass as White, their lives are racially marked, as they are perceived and treated as non-White. Although they are considered White by the US Office of Management and Budget (OMB)—and thus on the US Census—the daily lives of Arabs in the United States are marked by discrimination because of their ethnicity, religion, and immigration status.
 
-<b> (3) Arabs in the United States are racialized and discriminated against based on one religion, Islam: </b> Most Arabs in the United States come from diverse religious traditions, including Christianity, Judaism, Bahá’í, Druze, and Yazidism, and others adopt no religious tradition. However, Arabs are portrayed as uniformly Muslim, and Islam is portrayed as a violent and uncivilized religion. In this context, Islam is used to racialize Arabs as inferior to White Americans.
+**(3) Arabs in the United States are racialized and discriminated against based on one religion, Islam:** Most Arabs in the United States come from diverse religious traditions, including Christianity, Judaism, Bahá’í, Druze, and Yazidism, and others adopt no religious tradition. However, Arabs are portrayed as uniformly Muslim, and Islam is portrayed as a violent and uncivilized religion. In this context, Islam is used to racialize Arabs as inferior to White Americans.
 
-<b> (4) Arab identity in the United States is influenced by the intersection of religion (integral to the structure of Arab societies) and race (integral to the structure of US society). </b> In most Arab countries, social structures are constructed by religion, whereas in the United States, social structures are organized, or perceived as organized, based on race. These social structures conflict and overlap for Arabs in the United States and can create confusion over their identity.
+**(4) Arab identity in the United States is influenced by the intersection of religion (integral to the structure of Arab societies) and race (integral to the structure of US society).** In most Arab countries, social structures are constructed by religion, whereas in the United States, social structures are organized, or perceived as organized, based on race. These social structures conflict and overlap for Arabs in the United States and can create confusion over their identity.
 
 
 For more history of the demographic composition of Arab-Americans, please visit the [Arab American National Museum](https://arabamericanmuseum.org/living-in-america/).
@@ -84,7 +82,7 @@ The immigration of Arabs into the United States are characterized by four main m
   <img src="migration-waves.png" alt="About Image" style="width: 100%;" />
 </figure>
 
-Image Source: [Dareen Bassma's <i> Invisible Citizens to Visible Subjects Multicultural Counseling Competence with the Arab American Population </i>](https://www.researchgate.net/publication/324213734_Invisible_Citizens_to_Visible_Subjects_Multicultural_Counseling_Competence_with_the_Arab_American_Population).
+Image Source: [Dareen Bassma's *Invisible Citizens to Visible Subjects Multicultural Counseling Competence with the Arab American Population *](https://www.researchgate.net/publication/324213734_Invisible_Citizens_to_Visible_Subjects_Multicultural_Counseling_Competence_with_the_Arab_American_Population).
 
 For more details of the differences between these migration waves, refer to the [Arab American Museum](https://arabamericanmuseum.org/coming-to-america/), [a timeline provided by History.com](https://www.history.com/news/arab-american-immigration-timeline), as well as Dareen Basma's [book](https://www.researchgate.net/publication/324213734_Invisible_Citizens_to_Visible_Subjects_Multicultural_Counseling_Competence_with_the_Arab_American_Population).
 
@@ -137,18 +135,18 @@ renderPlot({
 
 ```
 
-# Breakdown by National Origin per State
+# Breakdown by National Origin Across State
 
 ## Column {.sidebar}
 
 ```{r}
-
 selectInput("year", "Year:", unique(combined_df$year))
 selectInput("state", "State:", unique(combined_df$State))
 
 ```
 
 ## Column 
+### Distribution
 
 ```{r}
 renderPlot({
@@ -159,13 +157,10 @@ renderPlot({
              year == input$year,
              !(Variable %in% c("B04004_006", "B04004_014"))) %>%
     mutate(label=fct_reorder(label, value, sum)) %>% 
-    ggplot(aes(x=label, y=value, fill=sum)) +
+    ggplot(aes(x=label, y=value, fill=label)) +
     geom_col(alpha=0.8) +
-    labs(title=)
-    ggplot(filtered_data, aes(x = value, y = fct_reorder(input$state, value))) +
-    geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
       labs(
-        title = paste0("Stacked Bar Plot of Arab Population Estimates in ",
+        title = paste0("Breakdown of Arab population by national origin in ",
                        input$state),
         x = "Country of National Origin",
         y = "# of People (Counts)") +
@@ -174,22 +169,106 @@ renderPlot({
       scale_fill_manual(values = c("#8C564B", "#D8BFD8", "#BC8F8F", "#F4A460", "#556B2F", "#A0522D", "#BDB76B", "#CD853F"))
   })
 
+```
 
- combined_df %>%
-      filter(Type == "estimate" &
-             concept == "single_ancestry" &
-             State == "Maryland",
-             year == 2018,
-             !(Variable %in% c("B04004_006", "B04004_014"))) %>%
-    mutate(label=fct_reorder(label, value, sum)) %>% 
-    ggplot(aes(x=label, y=value, fill=sum)) +
-    geom_col(alpha=0.8) +
-    labs(title = paste0("Stacked Bar Plot of Arab Population Estimates in ",
-                       "Maryland"),
-        x = "Country of National Origin",
-        y = "# of People (Counts)") +
-      theme_minimal() +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-      scale_fill_manual(values = c("#8C564B", "#D8BFD8", "#BC8F8F", "#F4A460", "#556B2F", "#A0522D", "#BDB76B", "#CD853F"))
+# Analysis
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### **What is the distribution of Arabs across the US in 2019?**
+```{r}
+
+combined_df$Variable = as.factor(combined_df$Variable)
+
+total_Arab_summary_2019 = combined_df %>%
+  filter(Type=="estimate" & 
+           year=="2019" & 
+           label=="Total Arab" &
+           concept=="single_ancestry" &
+           Variable=="B04004_006") 
+
+total_Arab_summary_2019 %>%
+  ggplot(aes(x = value, y = fct_reorder(State, value))) +
+  geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
+  labs(title = "Bar Plot of Arab Population Estimates by State",
+       subtitle = str_wrap("As expected, there is a high density of Arabs in states with metropolitan cities"),
+       x = "Estimates of Arab Population per State",
+       y = "State") +
+  theme_minimal()
 
 ```
+
+### **What is the overall distribution of Arabs in 2019?**
+
+
+```{r}
+total_Arab_summary_2019 %>% ggplot(aes(x = `value`)) +
+  geom_density() +
+  labs(title = "Density Plot of Estimate Values",
+       subtitle = str_wrap("Some states have a high density of Arabs while other states have fewer"),
+       x = "Estimate of Total Count of Arab Individuals Per State",
+       y ="Density")
+
+
+```
+
+Row {data-height=650}
+-----------------------------------------------------------------------
+
+### **What is the breakdown of Arabs by country of national origin in Maryland and Virgina?**
+
+```{r}
+
+total_Arab_summary_diff_time = combined_df %>%
+  filter(Type=="estimate" & 
+           concept=="single_ancestry" &
+           State == c("Maryland", "Virginia"),
+           !(Variable %in% c("B04004_006", "B04004_014"))
+         ) 
+
+# I removed Variable==B04004_006, B04004_014" because it would end up being total count and I want to see the breakdown of the total separately from the total number
+
+total_Arab_summary_diff_time %>%
+  mutate(label = fct_reorder(label, value, sum)) %>%
+  ggplot(aes(x = label, y = value, fill = label)) +
+  geom_col(alpha = 0.8) +
+  labs(title = "Stacked Bar Plot of Arab Population Estimates by State and Label",
+       subtitle = str_wrap("The largest segment within the Arab population, based on national origin, is represented by individuals of Egyptian heritage"),
+       x = "Country of National Origin",
+       y = "# of People (Counts)") +
+  theme_minimal() +
+  facet_wrap(~State, scales = "free_y") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + scale_fill_manual(values = c("#8C564B", "#D8BFD8", "#BC8F8F", "#F4A460", "#556B2F", "#A0522D", "#BDB76B", "#CD853F"))
+
+
+
+```
+
+Row {data-height=650}
+-------------------------------------
+
+### **Is there a difference in the distribution of Arabs across states over time?**
+
+```{r}
+total_Arab_summary = combined_df %>%
+  filter(Type=="estimate" & 
+           label=="Total Arab" &
+           concept=="single_ancestry" &
+           Variable=="B04004_006") 
+
+
+total_Arab_summary %>% 
+  ggplot(aes(x=year, y=value))+
+  geom_boxplot() +
+  labs(title="Distribution of Arabs across states from 2014-2019",
+       subtitle=str_wrap("There is not a substantial change in the distribution of Arabs across states from 2014-2019"),
+       x="Year",
+       y="# of People (Count)")
+
+```
+
+Row {data-height=650}
+-------------------------------------
+
+In summary, it can be inferred from the data that (1) Arab individuals may tend to resort to living in areas where they find community members of similar cultural background, much like many immigrant populations in diaspora, (2) They likely live in large states and metropolitan cities and (3) In Maryland and Virginia, a significant portion of the Arab population is comprised of individuals with Egyptian, Lebanese, and Moroccan heritage 
