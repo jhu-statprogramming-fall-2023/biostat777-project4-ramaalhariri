@@ -6,6 +6,7 @@ output:
     vertical_layout: scroll
 runtime: shiny
 
+
 ---
 
 ```{r setup, include=FALSE}
@@ -63,6 +64,16 @@ str(combined_df)
 
 ```
 
+<iframe
+    width="640"
+    height="480"
+    src="https://www.youtube.com/embed/nkSQM_TgsS4"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen
+></iframe>
+
+
 # Heterogenous Identities
 
 ## Column {.tabset}
@@ -88,7 +99,7 @@ For more history of the demographic composition of Arab-Americans, please visit 
 The immigration of Arabs into the United States are characterized by four main migration waves, as indicated below.   
 
 <figure>
-  <img src="migration-waves.png" alt="About Image" style="width: 100%;" />
+  <img src="migration-waves.png" alt="About Image" style="width: 45%; height: auto;" />
 </figure>
 
 Image Source: [Dareen Bassma's *Invisible Citizens to Visible Subjects Multicultural Counseling Competence with the Arab American Population *](https://www.researchgate.net/publication/324213734_Invisible_Citizens_to_Visible_Subjects_Multicultural_Counseling_Competence_with_the_Arab_American_Population).
@@ -151,7 +162,6 @@ renderPlot({
 ```{r}
 selectInput("year", "Year:", unique(combined_df$year))
 selectInput("state", "State:", unique(combined_df$State))
-
 ```
 
 ## Column 
