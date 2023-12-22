@@ -1,0 +1,23 @@
+
+# server <- function(input, output) {
+#   filtered_data <- reactive({
+#     combined_df %>%
+#       filter(Type == "estimate" &
+#                year == input$year &
+#                label == input$label &
+#                concept == "single_ancestry")
+#   })
+#
+#   output$plot <- renderPlot({
+#     ggplot(filtered_data(), aes(x = value, y = fct_reorder(State, value))) +
+#       geom_bar(stat = "identity", fill = "blue", alpha = 0.7) +
+#       labs(
+#         title = paste0("Bar Plot of ", input$label, " Population by State in ", input$year),
+#         x = paste0("Estimates of ", input$label, " Population per State in ", input$year),
+#         y = "State"
+#       ) +
+#       theme_minimal()
+#   })
+# }
+#
+# shinyApp(ui, server)
