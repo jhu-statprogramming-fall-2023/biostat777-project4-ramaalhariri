@@ -54,6 +54,15 @@ This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus)
 
 # The Data
 
+**Data Source:**
+This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus) package in R. I downloaded the 5 year ACS from 2014-2019. The main variable is count of individuals that belong to an ancestral group. As a result of looking at several ethnic groups across 50 states, the dataframe is large so I only give a brief look into it below.
+
+```{r, echo=TRUE}
+
+str(combined_df)
+
+```
+
 # Heterogenous Identities
 
 ## Column {.tabset}
