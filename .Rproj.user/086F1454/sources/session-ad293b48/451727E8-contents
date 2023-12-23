@@ -17,19 +17,119 @@ library(shiny)
 library(here)
 library(stringr)
 library(forcats)
+library(tidycensus)
+library(purrr)
+library(tidyverse)
+
 ```
 
-```{r}
+
+```{r, include=FALSE}
+census_api_key("87aa96dbd4a1bde9692cb9dae550af95b158b5d8",
+                 overwrite = TRUE,
+                 install = TRUE)
+
+
+all_vars_acs5 <- load_variables(year = 2019,
+                                dataset = "acs5")
+
+# I want to see all of the possible variables to look at and so I grouped data by concept
+all_vars_acs5$concept <- factor(all_vars_acs5$concept)
+
+#levels(all_vars_acs5$concept) # there are about 1134 possible variables to look at
+
+Arab_subset <- all_vars_acs5 %>%
+  filter(str_detect(label, "Arab") |
+           str_detect(label, "ARAB") |
+           str_detect(concept, "Arab") |
+           str_detect(concept, "ARAB"))
+
+# I did this to see what variables exist that I can use
+
+# I'm only interested in the variables related to total # of people
+vars = Arab_subset$name[1:30]
+
+# Years I want to get data from
+years <- 2014:2019
+
+# Subsetting data with above years
+dfs_acs <- map(years, ~get_acs(geography = "state", variables = vars,
+                               year = .x))
+
+names(dfs_acs) <- paste0("df_acs_", years)
+
+list2env(dfs_acs, envir = .GlobalEnv)
+
+# My data is stored in a list, and I want to combine it into a single data frame
+
+combined_df_all <- bind_cols(map(dfs_acs, ~select(.x, NAME, variable, estimate, moe)), .id = "year")
+
+# combined_df_subset <- bind_cols(map(filtered_dfs, ~select(.x, NAME, variable, estimate, moe)), .id = "year")
+
+# Renaming data
+
+combined_df = combined_df_all %>%
+  rename("Variable" = "variable...2",
+         "State" = "NAME...1",
+         "2014_estimate" = "estimate...3",
+         "2014_moe" = "moe...4",
+         "2015_estimate" = "estimate...7",
+         "2015_moe" = "moe...8",
+         "2016_estimate" = "estimate...11",
+         "2016_moe" = "moe...12",
+         "2017_estimate" = "estimate...15",
+         "2017_moe" = "moe...16",
+         "2018_estimate" = "estimate...19",
+         "2018_moe" = "moe...20",
+         "2019_estimate" = "estimate...23",
+         "2019_moe" = "moe...24") %>%
+  select(-starts_with("variable.."), -starts_with("NAME"))
+
+
+# Keeping track of all these variable names is hard so I am just going to append the dataframe that contains the variable names and labels to the dataframe
+
+combined_df <- left_join(combined_df, Arab_subset,
+                    by = c("Variable" = "name"))
+
+# Define the recoding rules
+
+unique(combined_df$concept)
+
+recoding_rules <- c(
+  "single_ancestry" = "PEOPLE REPORTING SINGLE ANCESTRY",
+  "multi_ancestry" = "PEOPLE REPORTING MULTIPLE ANCESTRY",
+  "ancestry" = "PEOPLE REPORTING ANCESTRY")
+
+
+combined_df=combined_df %>%
+  mutate(concept=fct_recode(concept,!!!recoding_rules),
+         label=str_remove(label, "Estimate!!Total:!!"),
+         label=str_remove(label, "Arab:!!"),
+         label=str_replace(label, "Arab:", "Arab")) %>%
+  pivot_longer(cols = ends_with("estimate") | ends_with("moe"),
+               names_to = c(".value", "Type"),
+               names_sep = "_") %>%
+  pivot_longer(cols = starts_with("201"),
+    names_to = "year",
+    values_to = "value")
+
+dir.exists("data")
+# this was false so I decided to make a directory
+
 if(!dir.exists("data")){
   dir.create("data")
 }
 
 
-combined_df <- readRDS(here("data", "combined_df.RDS"))
+if(!file.exists(here("data", "combined_df.RDS"))){
+  saveRDS(combined_df, file=here("data","combined_df.RDS"))
+}
 
 combined_df$label <- fct_recode(combined_df$label, "Total Arab" = "Arab")
 
+
 ```
+
 # About
 
 <figure>
@@ -38,7 +138,7 @@ combined_df$label <- fct_recode(combined_df$label, "Total Arab" = "Arab")
 
 Source: [CNN](https://www.cnn.com/2022/04/28/us/arab-american-heritage-month-race-deconstructed-newsletter/index.html)
 
-
+ 
 **Census Data Challenges for MENA Populations:**
 Census data on Middle Eastern and North African (MENA) populations in the United States faces notable challenges due to the prevalent classification of many individuals from the MENA region as "White" under traditional census measures. This classification oversimplifies the diverse MENA demographic, masking distinct social structures and cultural nuances present among these racial groups. The broad categorization of MENA individuals as "White" complicates efforts to accurately capture unique demographic features, hindering comprehensive insights into economic, social, and healthcare considerations specific to this population. The complexity of MENA identities, spanning diverse ethnicities, cultures, and historical backgrounds, often goes unrecognized within conventional census categories.
 
@@ -58,20 +158,11 @@ This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus)
 **Data Source:**
 This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus) package in R. I downloaded the 5 year ACS from 2014-2019. The main variable is count of individuals that belong to an ancestral group. As a result of looking at several ethnic groups across 50 states, the dataframe is large so I only give a brief look into it below.
 
-```{r, echo=TRUE}
+```{r}
 
-str(combined_df)
+combined_df %>% DT::datatable()
 
 ```
-
-<iframe
-    width="640"
-    height="480"
-    src="https://www.youtube.com/embed/nkSQM_TgsS4"
-    frameborder="0"
-    allow="autoplay; encrypted-media"
-    allowfullscreen
-></iframe>
 
 
 # Heterogenous Identities
@@ -160,33 +251,36 @@ renderPlot({
 ## Column {.sidebar}
 
 ```{r}
-selectInput("year", "Year:", unique(combined_df$year))
 selectInput("state", "State:", unique(combined_df$State))
+
 ```
 
-## Column 
+## Column
+
 ### Distribution
 
 ```{r}
+
 renderPlot({
   combined_df %>%
       filter(Type == "estimate" &
              concept == "single_ancestry" &
-             State == input$state,
-             year == input$year,
+               State == input$state &
+               year == 2019 &
              !(Variable %in% c("B04004_006", "B04004_014"))) %>%
-    mutate(label=fct_reorder(label, value, sum)) %>% 
+    mutate(label=fct_reorder(label, value, sum)) %>%
     ggplot(aes(x=label, y=value, fill=label)) +
     geom_col(alpha=0.8) +
       labs(
         title = paste0("Breakdown of Arab population by national origin in ",
-                       input$state),
+                       input$state, " (2019)"),
         x = "Country of National Origin",
         y = "# of People (Counts)") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       scale_fill_manual(values = c("#8C564B", "#D8BFD8", "#BC8F8F", "#F4A460", "#556B2F", "#A0522D", "#BDB76B", "#CD853F"))
   })
+
 
 ```
 
@@ -291,3 +385,15 @@ Row {data-height=650}
 -------------------------------------
 
 In summary, it can be inferred from the data that (1) Arab individuals may tend to resort to living in areas where they find community members of similar cultural background, much like many immigrant populations in diaspora, (2) They likely live in large states and metropolitan cities and (3) In Maryland and Virginia, a significant portion of the Arab population is comprised of individuals with Egyptian, Lebanese, and Moroccan heritage 
+
+
+# Video Tutorial
+
+<iframe
+    width="640"
+    height="480"
+    src="https://www.youtube.com/embed/nkSQM_TgsS4"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen
+></iframe>

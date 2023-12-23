@@ -1,0 +1,12 @@
+name: MENA-census
+title: MENA-census
+username: ramaalhariri
+account: ramaalhariri
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10840477
+bundleId: 8078074
+url: https://ramaalhariri.shinyapps.io/MENA-census/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
