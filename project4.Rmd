@@ -127,7 +127,6 @@ if(!file.exists(here("data", "combined_df.RDS"))){
 
 combined_df$label <- fct_recode(combined_df$label, "Total Arab" = "Arab")
 
-
 ```
 
 # About
@@ -152,15 +151,48 @@ Beyond its utility for individuals, the dashboard has a broader purpose. The inf
 **Data Source:**
 This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus) package in R.
 
-
-# The Data
-
 **Data Source:**
 This data was sourced from the [Tidy Census](https://walker-data.com/tidycensus) package in R. I downloaded the 5 year ACS from 2014-2019. The main variable is count of individuals that belong to an ancestral group. As a result of looking at several ethnic groups across 50 states, the dataframe is large so I only give a brief look into it below.
 
+# Data
+
+## Column {.tabset}
+### Data dictionary
+
+```{r}
+data_dictionary <- data.frame(
+  variable_name = c("State", "Variable", "label", "Type", "year", "value"),
+  value = c("U.S State", "Variable name as identified in tidycensus", "Ethnicity", "Estimate or margin of error (moe)", "Year from 2014 to 2019", "Count of individuals from ethnic group in area")
+)
+
+data_dictionary %>% DT::datatable()
+
+```
+
+### Full data
 ```{r}
 
-combined_df %>% DT::datatable()
+DT::renderDataTable(
+      DT::datatable(
+        combined_df, 
+        extensions = 'Buttons',
+        options = list(
+          dom = 'Bfrtip',
+          lengthMenu = list(c(5, 15, -1), c('5', '15', 'All')),
+          pageLength = 15,
+          buttons = list(
+            list(
+              extend = "collection",
+              text = 'Show All',
+              action = DT::JS("function ( e, dt, node, config ) {
+                                    dt.page.len(-1);
+                                    dt.ajax.reload();
+                                }")
+            )
+          )
+        )
+      )
+    )
 
 ```
 
